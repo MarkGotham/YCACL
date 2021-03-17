@@ -1,7 +1,7 @@
 # YCACL
 'YCACL' stands for 'YCAC Light' and reads as 'Why Cackle?'
 
-This is light(er) version of the 'Yale-Classical Archives Corpus' (YCAC) as reported in White and Quinn (EMR 2014) and available here: [https://ycac.yale.edu/](https://ycac.yale.edu/).
+This is a light(er) version of the 'Yale-Classical Archives Corpus' (YCAC) as reported in White and Quinn (EMR 2014) and available here: [https://ycac.yale.edu/](https://ycac.yale.edu/).
 
 The YCAC corpus is useful for a range of tasks, though it is a little unwieldy in some ways.
 This is an attempt to make YCAC more readily and immediately usable for the majority of prospective use cases including as training data for machine learning.
@@ -38,11 +38,31 @@ In summary: YCAC's column listings are processed as follows:
 - `LocalSDForm_BassSD` and `Confidence`: removed
 
 As such, the columns and data types for YCACL files are thus:
+
 0. `offset`: `float`
 1. `chord`: `str`
 2. `LocalTonic`: `int` in the range 0-11, or `str` (`?`) when ambiguous.
 3. `LocalMode`: `str`, one of `['?', 'M', 'm']`
 
+
+## Directory structure
+
+Files are hosted in the format `data/<composer>/<work>.csv`.
+
+### Composer names
+Composer names are almost entirely consistent with their presentation in YCAC including:
+- the use of last name only by default,
+- using first initials to disambiguate two composers with the same surname.
+
+YCACL introduces a consistent format for those initials such that a composer called A. B. Surname features as `Surname,_A.B.` and thus appears next to the other composer/s of the same surname in any alphabetic sorting.
+
+Implementing this also helped identify and resolve the occasional typo and trailing space.
+
+### File names
+
+File names are exactly as presented in YCAC, except for introducing underscores in place of spaces.
+Note that, following YCAC, all file names end with YCAC's best guess of the work's overall key in the format `<Tonic>_<Quality>` such as `Bb_major`.
+Retrieve this key with a script like `key, quality = fileName.split('_')[-2:]`
 
 ## People, Licence, Acknowledgements
 
