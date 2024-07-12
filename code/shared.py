@@ -214,6 +214,59 @@ iv_to_str = {
 }
 
 
+def norm_progression_to_lowest(
+        pitches_string_1: str,
+        pitches_string_2: str,
+) -> list[list[int]]:
+    """
+    Takes two pitch strings
+    (i.e., "slices" from the data set)
+    and returns both as MIDI numbers,
+    normalised to the lowest note that appears.
+
+    Here's an example progression in close position (possibly V6-I):
+
+    >>> norm_progression_to_lowest("E-5 B-4 G4", "E-5 C5 A-4")
+    [[8, 3, 0], [8, 5, 1]]
+    """
+    list_1 = pitches_string_to_MIDI_list(pitches_string_1)
+    list_2 = pitches_string_to_MIDI_list(pitches_string_2)
+
+    min_val = min(list_1)
+    if min(list_2) < min_val:
+        min_val = min(list_2)
+
+    return [[x - min_val for x in list_1], [x - min_val for x in list_2]]
+
+
+def norm_by_key(
+        pitches_string_1: str,
+        pitches_string_2: str,
+        tonic: int
+) -> list[list[int]]:
+    """
+    Takes two pitch strings
+    (i.e., "slices" from the data set)
+    and returns both as lists of ints,
+    normalised to the `tonic` argument.
+
+    Here's the example progression, now explicitly as a V6-I:
+
+    >>> norm_by_key("E-5 B-4 G4", "E-5 C5 A-4", 8)
+    [[7, 2, 11], [7, 4, 0]]
+
+    Suggested usage:
+    take the YCAC team's estimate of local tonic (provided in the third column of the CSV files)
+    and where that's missing `?`, use the global key provided in the metadata and file name.
+
+    Note this function makes the distinction between major and minor keys:
+    scale positions expressed in semi-tones from the tonic (0-11), not scale degrees (1-7).
+    """
+    list_1 = pitches_string_to_MIDI_list(pitches_string_1)
+    list_2 = pitches_string_to_MIDI_list(pitches_string_2)
+    return [[(x - tonic) % 12 for x in list_1], [(x - tonic) % 12 for x in list_2]]
+
+
 # ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
